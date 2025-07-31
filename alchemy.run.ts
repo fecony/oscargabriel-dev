@@ -4,9 +4,6 @@ import { CustomDomain, Website } from "alchemy/cloudflare";
 const APP_NAME = "oscargabriel-dev";
 
 const app = await alchemy(APP_NAME, {
-  phase: process.argv.includes("destroy") ? "destroy" : "up",
-  stage: process.env.ALCHEMY_STAGE || "dev",
-  quiet: process.argv.includes("--quiet"),
   password: process.env.SECRET_ALCHEMY_PASSPHRASE,
 });
 

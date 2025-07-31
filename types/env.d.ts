@@ -1,9 +1,6 @@
 import type { site } from "@/root/alchemy.run";
 
-// Type intersection to add the right type for REALTIME_DURABLE_OBJECT to env
-export type WorkerEnv = typeof site.Env & {
-	REALTIME_DURABLE_OBJECT: DurableObjectNamespace<RealtimeDurableObject>;
-};
+export type WorkerEnv = typeof site.Env;
 
 declare module "cloudflare:workers" {
 	namespace Cloudflare {

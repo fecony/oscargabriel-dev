@@ -6,4 +6,7 @@ suppressHydrationWarning();
 
 initClient();
 
-initClientNavigation();
+initClientNavigation({
+	scrollToTop: true,
+	scrollBehavior: "instant",
+});
