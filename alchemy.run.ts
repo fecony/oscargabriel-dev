@@ -1,34 +1,31 @@
 import alchemy from "alchemy";
-import { CustomDomain, Website } from "alchemy/cloudflare";
+import { Redwood, WranglerJson } from "alchemy/cloudflare";
 
-const APP_NAME = "oscargabriel-dev";
+const APP_NAME = "oscar-gabriel-dev";
 
 const app = await alchemy(APP_NAME, {
-  password: process.env.SECRET_ALCHEMY_PASSPHRASE,
+  password: process.env.ALCHEMY_PASSWORD!,
 });
 
-export const site = await Website("site", {
-  name: `${APP_NAME}`,
-  command: "bun run build",
-  main: "dist/worker/worker.js",
-  assets: "dist/client",
-  wrangler: {
-    main: "src/worker.tsx",
-  },
-  compatibilityFlags: ["nodejs_compat"],
-  compatibilityDate: "2025-07-19",
-  observability: {
-    enabled: true,
-  },
-});
-
-export const customDomain = await CustomDomain("custom-domain", {
-  name: process.env.CUSTOM_DOMAIN!,
-  zoneId: process.env.CLOUDFLARE_ZONE_ID!,
-  workerName: site.name,
+export const worker = await Redwood("redwood-app", {
+  name: `${APP_NAME}-site`,
   adopt: true,
+  compatibilityDate: "2025-08-08",
+  domains: [
+    {
+      domainName: process.env.CUSTOM_DOMAIN!,
+      zoneId: process.env.CLOUDFLARE_ZONE_ID!,
+      adopt: true,
+    },
+  ],
 });
 
-console.log(`➜  Site deployed at: https://${process.env.CUSTOM_DOMAIN}`);
+await WranglerJson("wrangler", {
+  worker,
+});
+
+console.log({
+  url: process.env.CUSTOM_DOMAIN || "http://localhost:5173",
+});
 
 await app.finalize();

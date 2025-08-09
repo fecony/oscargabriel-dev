@@ -1,4 +1,4 @@
-import type { site } from "@/root/alchemy.run";
+import type { site } from "../alchemy.run";
 
 export type WorkerEnv = typeof site.Env;
 

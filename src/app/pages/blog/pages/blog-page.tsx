@@ -1,4 +1,4 @@
-import { allPosts } from "content-collections";
+import { allPosts, type Post } from "content-collections";
 
 export function BlogPage() {
 	return (
@@ -14,9 +14,10 @@ export function BlogPage() {
 				<div className="space-y-6">
 					{allPosts
 						.sort(
-							(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+							(a: Post, b: Post) =>
+								new Date(b.date).getTime() - new Date(a.date).getTime(),
 						)
-						.map((post) => {
+						.map((post: Post) => {
 							const slug = post._meta.path.replace(/\.md$/, "");
 
 							return (

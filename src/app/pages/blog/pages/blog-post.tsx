@@ -1,9 +1,11 @@
-import { allPosts } from "content-collections";
+import { allPosts, type Post } from "content-collections";
 import type { RequestInfo } from "rwsdk/worker";
 
 export function BlogPost({ params }: RequestInfo) {
 	const { slug } = params;
-	const post = allPosts.find((p) => p._meta.path.replace(/\.md$/, "") === slug);
+	const post = allPosts.find(
+		(p: Post) => p._meta.path.replace(/\.md$/, "") === slug,
+	);
 
 	if (!post) {
 		return (
