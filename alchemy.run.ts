@@ -1,5 +1,5 @@
 import alchemy from "alchemy";
-import { Redwood, WranglerJson } from "alchemy/cloudflare";
+import { KVNamespace, Redwood, WranglerJson } from "alchemy/cloudflare";
 
 const APP_NAME = "oscar-gabriel-dev";
 
@@ -7,10 +7,19 @@ const app = await alchemy(APP_NAME, {
   password: process.env.ALCHEMY_PASSWORD!,
 });
 
+const starsCache = await KVNamespace("github-stars-cache", {
+  title: "github-stars-cache",
+});
+
 export const worker = await Redwood("redwood-app", {
   name: `${APP_NAME}-site`,
   adopt: true,
   compatibilityDate: "2025-08-08",
+  bindings: {
+    STARS_CACHE: starsCache,
+    GITHUB_TOKEN: alchemy.secret(process.env.GITHUB_TOKEN!),
+    GITHUB_USER_AGENT: process.env.GITHUB_USER_AGENT!,
+  },
   domains: [
     {
       domainName: process.env.CUSTOM_DOMAIN!,

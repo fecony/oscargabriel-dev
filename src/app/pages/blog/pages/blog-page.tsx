@@ -1,5 +1,13 @@
 import { allPosts, type Post } from "content-collections";
 
+import { Badge } from "@/app/components/ui/badge";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/app/components/ui/card";
+
 export function BlogPage() {
 	return (
 		<div className="bg-background px-4">
@@ -21,24 +29,19 @@ export function BlogPage() {
 							const slug = post._meta.path.replace(/\.md$/, "");
 
 							return (
-								<article
-									key={post._meta.path}
-									className="flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm transition-shadow hover:shadow-md"
-								>
-									<header className="px-6">
+								<Card key={post._meta.path}>
+									<CardHeader>
 										<div className="flex items-start justify-between gap-4">
 											<div className="flex-1">
-												<h2 className="mb-2 font-semibold text-lg leading-tight sm:text-xl">
-													{" "}
+												<CardTitle className="mb-2 text-lg leading-tight sm:text-xl">
 													<a
 														href={`/blog/${slug}`}
 														className="text-foreground transition-colors hover:text-primary"
 													>
 														{post.title}
 													</a>
-												</h2>
+												</CardTitle>
 												<div className="flex items-center gap-3 text-muted-foreground text-xs sm:text-sm">
-													{" "}
 													<span>By {post.author}</span>
 													<span>•</span>
 													<time>
@@ -51,13 +54,11 @@ export function BlogPage() {
 												</div>
 											</div>
 											{post.protected && (
-												<span className="inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border border-transparent bg-secondary px-2 py-0.5 font-medium text-secondary-foreground text-xs">
-													🔒 Protected
-												</span>
+												<Badge variant="secondary">🔒 Protected</Badge>
 											)}
 										</div>
-									</header>
-									<div className="px-6">
+									</CardHeader>
+									<CardContent>
 										<p className="mb-4 text-muted-foreground text-sm leading-relaxed sm:text-base">
 											{post.summary}
 										</p>
@@ -65,11 +66,10 @@ export function BlogPage() {
 											href={`/blog/${slug}`}
 											className="font-medium text-primary text-xs transition-colors hover:underline sm:text-sm"
 										>
-											{" "}
 											Read more →
 										</a>
-									</div>
-								</article>
+									</CardContent>
+								</Card>
 							);
 						})}
 				</div>
