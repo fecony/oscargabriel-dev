@@ -35,4 +35,13 @@ export const projects: ProjectItem[] = [
 		githubUrl: "https://github.com/oscabriel/rwsdk-guestbook",
 		repo: { owner: "oscabriel", name: "rwsdk-guestbook" },
 	},
+	{
+		title: "Portfolio Site",
+		description:
+			"My portfolio site (this very site!) built with RedwoodSDK, Alchemy, Tailwind + shadcn/ui, Cloudflare KV, and Content Collections.",
+		date: "2025-07-13",
+		liveUrl: "https://oscargabriel.dev",
+		githubUrl: "https://github.com/oscabriel/oscargabriel-dev",
+		repo: { owner: "oscabriel", name: "oscargabriel-dev" },
+	},
 ];
