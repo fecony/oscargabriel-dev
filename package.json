@@ -7,8 +7,10 @@
 	"scripts": {
 		"build": "vite build",
 		"clean": "rm -rf ./node_modules/.vite",
-		"dev": "bun clean && bun vite dev",
-		"dev:watch": "bun clean && rwsync --watch \"npm run dev\"",
+		"dev": "bun alchemy dev",
+		"dev:clean": "bun clean:vite && bun dev",
+		"dev:vite": "bun --env-file=.env.dev vite dev",
+		"dev:sync": "bun clean && rwsync --watch \"npm run dev\"",
 		"check": "biome check --write src --verbose",
 		"check:unsafe": "biome check --write src --unsafe --verbose",
 		"typecheck": "tsc --noEmit",

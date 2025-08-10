@@ -10,7 +10,7 @@ import {
 
 export function BlogPage() {
 	return (
-		<div className="bg-background px-4">
+		<div className="bg-background px-4 pb-16">
 			<div className="mx-auto max-w-3xl">
 				<div className="mb-8">
 					<h1 className="mb-6 font-bold text-5xl">Blog</h1>
@@ -29,7 +29,10 @@ export function BlogPage() {
 							const slug = post._meta.path.replace(/\.md$/, "");
 
 							return (
-								<Card key={post._meta.path}>
+								<Card
+									key={post._meta.path}
+									className="hover:-translate-y-1 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
+								>
 									<CardHeader>
 										<div className="flex items-start justify-between gap-4">
 											<div className="flex-1">
