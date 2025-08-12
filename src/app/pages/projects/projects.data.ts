@@ -9,6 +9,15 @@ export interface ProjectItem {
 
 export const projects: ProjectItem[] = [
 	{
+		title: "Expense Tracker",
+		description:
+			"A simple expense tracker deployed to Fly.io built with React, Vite, Hono, Neon Postgres, and Kinde Auth. It allows you to add, edit, and delete expenses, and view the total amount of expenses.",
+		date: "2024-08-12",
+		liveUrl: "https://parsus.fly.dev",
+		githubUrl: "https://github.com/oscabriel/expense-tracker",
+		repo: { owner: "oscabriel", name: "expense-tracker" },
+	},
+	{
 		title: "Better Cloud",
 		description:
 			"Fullstack typescript starter kit combining the best of Cloudflare with the modern React ecosystem, including Vite, Hono, Tanstack Router + Query, and Better Auth.",

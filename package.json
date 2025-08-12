@@ -7,15 +7,15 @@
 	"scripts": {
 		"build": "vite build",
 		"clean": "rm -rf ./node_modules/.vite",
-		"dev": "bun alchemy dev",
+		"dev": "bun alchemy dev --env-file .env.dev",
 		"dev:clean": "bun clean:vite && bun dev",
 		"dev:vite": "bun --env-file=.env.dev vite dev",
 		"dev:sync": "bun clean && rwsync --watch \"npm run dev\"",
 		"check": "biome check --write src --verbose",
 		"check:unsafe": "biome check --write src --unsafe --verbose",
 		"typecheck": "tsc --noEmit",
-		"infra:up": "bun alchemy deploy",
-		"infra:down": "bun alchemy destroy"
+		"infra:up": "bun alchemy deploy --env-file .env.prod",
+		"infra:down": "bun alchemy destroy --env-file .env.prod"
 	},
 	"dependencies": {
 		"@biomejs/biome": "2.1.4",
