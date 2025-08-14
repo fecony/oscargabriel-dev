@@ -1,7 +1,7 @@
 export interface ProjectItem {
 	title: string;
 	description: string;
-	date: string; // ISO date string
+	date: string;
 	liveUrl: string;
 	githubUrl: string;
 	repo: { owner: string; name: string };

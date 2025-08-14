@@ -20,7 +20,7 @@ export function LandingPage() {
 						</a>{" "}
 						<span className="text-muted-foreground">in</span>{" "}
 						<a
-							href="https://pdx.com"
+							href="https://www.google.com/maps/place/Portland,+OR/@45.5428365,-122.8191878,11z/data=!3m1!4b1!4m6!3m5!1s0x54950b0b7da97427:0x1c36b9e6f6d18591!8m2!3d45.515232!4d-122.6783853!16s%2Fm%2F02frhbc?entry=ttu&g_ep=EgoyMDI1MDgxMS4wIKXMDSoASAFQAw%3D%3D"
 							className="text-foreground underline decoration-muted-foreground transition-colors hover:decoration-foreground"
 						>
 							PDX
@@ -46,22 +46,16 @@ export function LandingPage() {
 					<div>
 						<span className="text-muted-foreground">Building with</span>{" "}
 						<a
-							href="https://developers.cloudflare.com"
+							href="https://www.typescriptlang.org"
 							className="text-foreground underline decoration-muted-foreground transition-colors hover:decoration-foreground"
 						>
-							Cloudflare
+							Typescript
 						</a>{" "}
 						<a
-							href="https://hono.dev"
+							href="https://react.dev"
 							className="text-foreground underline decoration-muted-foreground transition-colors hover:decoration-foreground"
 						>
-							Hono
-						</a>{" "}
-						<a
-							href="https://rwsdk.com"
-							className="text-foreground underline decoration-muted-foreground transition-colors hover:decoration-foreground"
-						>
-							RedwoodSDK
+							React
 						</a>{" "}
 						<a
 							href="https://tanstack.com"
@@ -70,17 +64,18 @@ export function LandingPage() {
 							Tanstack
 						</a>{" "}
 						<a
-							href="https://convex.dev"
+							href="https://www.devlopers.cloudflare.com"
 							className="text-foreground underline decoration-muted-foreground transition-colors hover:decoration-foreground"
 						>
-							Convex
+							Cloudflare
 						</a>{" "}
 						<a
-							href="https://better-auth.com"
+							href="https://rwsdk.com"
 							className="text-foreground underline decoration-muted-foreground transition-colors hover:decoration-foreground"
 						>
-							Better-Auth
-						</a>
+							RedwoodSDK
+						</a>{" "}
+						<span className="text-muted-foreground">and more!</span>
 					</div>
 				</div>
 

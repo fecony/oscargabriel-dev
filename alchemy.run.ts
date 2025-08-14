@@ -14,7 +14,7 @@ const starsCache = await KVNamespace("github-stars-cache", {
 export const worker = await Redwood("redwood-app", {
   name: `${APP_NAME}-site`,
   adopt: true,
-  compatibilityDate: "2025-08-08",
+  compatibilityDate: "2025-06-17",
   bindings: {
     STARS_CACHE: starsCache,
     GITHUB_TOKEN: alchemy.secret(process.env.GITHUB_TOKEN!),
