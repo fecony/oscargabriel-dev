@@ -69,13 +69,14 @@ export function BlogPost({ params }: RequestInfo) {
 									year: "numeric",
 									month: "long",
 									day: "numeric",
+									timeZone: "UTC",
 								})}
 							</time>
 						</div>
 						<div className="mt-6 h-px bg-border" />
 					</header>
 					<div
-						className="prose prose-gray dark:prose-invert prose-headings:mt-6 prose-headings:mb-3 prose-p:mb-3 max-w-none prose-code:bg-muted prose-pre:bg-muted prose-headings:font-semibold prose-a:text-primary prose-p:text-sm prose-p:leading-relaxed prose-headings:tracking-tight prose-a:no-underline hover:prose-a:underline"
+						className="prose prose-gray dark:prose-invert prose-headings:mt-6 prose-headings:mb-3 prose-p:mb-3 max-w-none prose-code:bg-muted prose-pre:bg-muted prose-headings:font-semibold prose-a:text-orange-400 prose-p:text-base prose-p:leading-relaxed prose-headings:tracking-tight prose-a:no-underline prose-a:hover:underline prose-a:hover:text-orange-500"
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: Blog content is trusted markdown
 						dangerouslySetInnerHTML={{ __html: post.html }}
 					/>
