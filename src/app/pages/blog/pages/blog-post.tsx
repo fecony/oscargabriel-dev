@@ -76,7 +76,7 @@ export function BlogPost({ params }: RequestInfo) {
 						<div className="mt-6 h-px bg-border" />
 					</header>
 					<div
-						className="prose prose-gray dark:prose-invert prose-headings:mt-6 prose-headings:mb-3 prose-p:mb-3 max-w-none prose-code:bg-muted prose-pre:bg-muted prose-headings:font-semibold prose-a:text-orange-400 prose-p:text-base prose-p:leading-relaxed prose-headings:tracking-tight prose-a:no-underline prose-a:hover:underline prose-a:hover:text-orange-500"
+						className="prose prose-gray dark:prose-invert prose-headings:mt-6 prose-headings:mb-3 prose-p:mb-3 max-w-none prose-code:bg-muted prose-pre:bg-muted prose-headings:font-semibold prose-a:text-primary prose-p:text-base prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline prose-a:decoration-primary/70 prose-a:hover:decoration-primary"
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: Blog content is trusted markdown
 						dangerouslySetInnerHTML={{ __html: post.html }}
 					/>

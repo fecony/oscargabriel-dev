@@ -17,16 +17,16 @@
 		"infra:down": "bun alchemy destroy --env-file .env.prod"
 	},
 	"dependencies": {
-		"@biomejs/biome": "2.1.4",
+		"@biomejs/biome": "2.2.0",
 		"@tailwindcss/typography": "^0.5.16",
-		"@tailwindcss/vite": "^4.1.11",
+		"@tailwindcss/vite": "^4.1.12",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"lucide-react": "^0.539.0",
-		"radix-ui": "^1.4.2",
+		"radix-ui": "^1.4.3",
 		"rwsdk": "0.1.35",
 		"tailwind-merge": "^3.3.1",
-		"tailwindcss": "^4.1.11",
+		"tailwindcss": "^4.1.12",
 		"vite": "6.3.5"
 	},
 	"devDependencies": {
@@ -34,13 +34,13 @@
 		"@content-collections/core": "^0.10.0",
 		"@content-collections/markdown": "^0.1.4",
 		"@content-collections/vite": "^0.2.6",
-		"@types/node": "^24.2.1",
+		"@types/node": "^24.3.0",
 		"@types/react": "^19.1.10",
 		"@types/react-dom": "^19.1.7",
-		"alchemy": "^0.60.2",
+		"alchemy": "^0.62.0",
 		"tw-animate-css": "^1.3.6",
 		"typescript": "^5.9.2",
-		"wrangler": "^4.29.0",
+		"wrangler": "^4.30.0",
 		"zod": "^4.0.17"
 	},
 	"packageManager": "bun@1.2.20",

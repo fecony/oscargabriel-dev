@@ -82,7 +82,7 @@ export function LandingPage() {
 				<div className="mb-8">
 					<a
 						href="/blog"
-						className="text-orange-400 underline decoration-orange-400 transition-colors hover:text-orange-500 hover:decoration-orange-500"
+						className="text-primary underline decoration-primary/70 transition-colors hover:decoration-primary"
 					>
 						Read my first blog post →
 					</a>

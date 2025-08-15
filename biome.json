@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -73,10 +73,10 @@
 		"includes": [
 			"**",
 			"!alchemy.run.ts",
-			"!**/dist/**",
-			"!**/node_modules/**",
-			"!**/public/**",
-			"!**/src/db/migrations/**"
+			"!**/dist",
+			"!**/node_modules",
+			"!**/public",
+			"!**/src/db/migrations"
 		]
 	}
 }

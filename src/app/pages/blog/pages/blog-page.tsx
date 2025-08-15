@@ -31,7 +31,7 @@ export function BlogPage() {
 							return (
 								<Card
 									key={post._meta.path}
-									className="hover:-translate-y-1 transition-all duration-200 hover:border-b-4 hover:border-b-orange-400"
+									className="hover:-translate-y-1 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
 								>
 									<CardHeader>
 										<div className="flex items-start justify-between gap-4">
@@ -68,7 +68,7 @@ export function BlogPage() {
 										</p>
 										<a
 											href={`/blog/${slug}`}
-											className="font-medium text-orange-400 text-xs transition-colors hover:text-orange-500 hover:underline sm:text-sm"
+											className="font-medium text-primary text-xs transition-colors hover:text-primary/80 sm:text-sm"
 										>
 											Read more →
 										</a>

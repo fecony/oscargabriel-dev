@@ -25,7 +25,7 @@ export async function ProjectsList() {
 			{items.map((p, idx) => (
 				<Card
 					key={`${p.repo.owner}/${p.repo.name}`}
-					className="hover:-translate-y-1 gap-4 transition-all duration-200 hover:border-b-4 hover:border-b-orange-400"
+					className="hover:-translate-y-1 gap-4 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
 				>
 					<CardHeader>
 						<div className="flex items-start justify-between gap-4">
@@ -42,13 +42,13 @@ export async function ProjectsList() {
 						<div className="flex gap-4">
 							<a
 								href={p.liveUrl}
-								className="font-medium text-orange-400 transition-colors hover:text-orange-500 hover:underline"
+								className="font-medium text-primary transition-colors hover:text-primary/80"
 							>
 								Visit →
 							</a>
 							<a
 								href={p.githubUrl}
-								className="inline-flex items-center text-primary hover:underline"
+								className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground hover:underline"
 							>
 								GitHub →
 							</a>
