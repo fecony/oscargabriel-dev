@@ -10,74 +10,99 @@ import {
 
 export function BlogPage() {
 	return (
-		<div className="bg-background px-4 pb-16">
-			<div className="mx-auto max-w-3xl">
-				<div className="mb-8">
-					<h1 className="mb-6 font-bold text-5xl">Blog</h1>
-					<p className="text-base text-muted-foreground sm:text-lg">
-						Latest articles and updates
-					</p>
-				</div>
+		<>
+			{/* SEO and OpenGraph Meta Tags for Blog Index */}
+			<title>Blog | Oscar Gabriel</title>
+			<meta
+				name="description"
+				content="Latest articles and updates from Oscar Gabriel on web development, AI-assisted coding, and technology insights."
+			/>
 
-				<div className="space-y-6">
-					{allPosts
-						.sort(
-							(a: Post, b: Post) =>
-								new Date(b.date).getTime() - new Date(a.date).getTime(),
-						)
-						.map((post: Post) => {
-							const slug = post._meta.path.replace(/\.md$/, "");
+			{/* Open Graph */}
+			<meta property="og:type" content="website" />
+			<meta property="og:title" content="Blog | Oscar Gabriel" />
+			<meta
+				property="og:description"
+				content="Latest articles and updates from Oscar Gabriel on web development, AI-assisted coding, and technology insights."
+			/>
+			<meta property="og:url" content="https://oscargabriel.dev/blog" />
+			<meta
+				property="og:image"
+				content="https://oscargabriel.dev/images/ai-coding-header.jpg"
+			/>
 
-							return (
-								<Card
-									key={post._meta.path}
-									className="hover:-translate-y-1 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
-								>
-									<CardHeader>
-										<div className="flex items-start justify-between gap-4">
-											<div className="flex-1">
-												<CardTitle className="mb-2 text-lg leading-tight sm:text-xl">
-													<a
-														href={`/blog/${slug}`}
-														className="text-foreground transition-colors hover:text-primary"
-													>
-														{post.title}
-													</a>
-												</CardTitle>
-												<div className="flex items-center gap-3 text-muted-foreground text-xs sm:text-sm">
-													<span>By {post.author}</span>
-													<span>•</span>
-													<time>
-														{new Date(post.date).toLocaleDateString("en-US", {
-															year: "numeric",
-															month: "long",
-															day: "numeric",
-															timeZone: "UTC",
-														})}
-													</time>
+			{/* Canonical URL */}
+			<link rel="canonical" href="https://oscargabriel.dev/blog" />
+
+			<div className="bg-background px-4 pb-16">
+				<div className="mx-auto max-w-3xl">
+					<div className="mb-8">
+						<h1 className="mb-6 font-bold text-5xl">Blog</h1>
+						<p className="text-base text-muted-foreground sm:text-lg">
+							Latest articles and updates
+						</p>
+					</div>
+
+					<div className="space-y-6">
+						{allPosts
+							.sort(
+								(a: Post, b: Post) =>
+									new Date(b.date).getTime() - new Date(a.date).getTime(),
+							)
+							.map((post: Post) => {
+								const slug = post._meta.path.replace(/\.md$/, "");
+
+								return (
+									<Card
+										key={post._meta.path}
+										className="hover:-translate-y-1 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
+									>
+										<CardHeader>
+											<div className="flex items-start justify-between gap-4">
+												<div className="flex-1">
+													<CardTitle className="mb-2 text-lg leading-tight sm:text-xl">
+														<a
+															href={`/blog/${slug}`}
+															className="text-foreground transition-colors hover:text-primary"
+														>
+															{post.title}
+														</a>
+													</CardTitle>
+													<div className="flex items-center gap-3 text-muted-foreground text-xs sm:text-sm">
+														<span>By {post.author}</span>
+														<span>•</span>
+														<time>
+															{new Date(post.date).toLocaleDateString("en-US", {
+																year: "numeric",
+																month: "long",
+																day: "numeric",
+																timeZone: "UTC",
+															})}
+														</time>
+													</div>
 												</div>
+												{post.protected && (
+													<Badge variant="secondary">🔒 Protected</Badge>
+												)}
 											</div>
-											{post.protected && (
-												<Badge variant="secondary">🔒 Protected</Badge>
-											)}
-										</div>
-									</CardHeader>
-									<CardContent>
-										<p className="mb-4 text-muted-foreground text-sm leading-relaxed sm:text-base">
-											{post.summary}
-										</p>
-										<a
-											href={`/blog/${slug}`}
-											className="font-medium text-primary text-xs transition-colors hover:text-primary/80 sm:text-sm"
-										>
-											Read more →
-										</a>
-									</CardContent>
-								</Card>
-							);
-						})}
+										</CardHeader>
+										<CardContent>
+											<p className="mb-4 text-muted-foreground text-sm leading-relaxed sm:text-base">
+												{post.summary}
+											</p>
+											<a
+												href={`/blog/${slug}`}
+												className="font-medium text-primary text-xs transition-colors hover:text-primary/80 sm:text-sm"
+											>
+												Read more →
+											</a>
+										</CardContent>
+									</Card>
+								);
+							})}
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

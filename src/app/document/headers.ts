@@ -27,6 +27,6 @@ export const setCommonHeaders =
 		// Defines trusted sources for content loading and script execution:
 		headers.set(
 			"Content-Security-Policy",
-			`default-src 'self'; script-src 'self' 'nonce-${nonce}' ${IS_DEV ? "'unsafe-eval'" : ""}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://avatars.githubusercontent.com https://lh3.googleusercontent.com data:; connect-src 'self' https: ${IS_DEV ? "ws: wss:" : "wss:"}; object-src 'none';`,
+			`default-src 'self'; script-src 'self' 'nonce-${nonce}' ${IS_DEV ? "'unsafe-eval'" : ""}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://avatars.githubusercontent.com https://lh3.googleusercontent.com https://images.unsplash.com data:; connect-src 'self' https: ${IS_DEV ? "ws: wss:" : "wss:"}; object-src 'none';`,
 		);
 	};

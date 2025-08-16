@@ -3,25 +3,27 @@ import { compileMarkdown } from "@content-collections/markdown";
 import { z } from "zod";
 
 const posts = defineCollection({
-  name: "posts",
-  directory: "./src/app/pages/blog/content/",
-  include: "*.md",
-  schema: z.object({
-    title: z.string(),
-    summary: z.string(),
-    date: z.coerce.date(),
-    author: z.string(),
-    protected: z.boolean().optional(),
-  }),
-  transform: async (document, context) => {
-    const html = await compileMarkdown(context, document); // HTML compilation for Workers
-    return {
-      ...document,
-      html,
-    };
-  },
+	name: "posts",
+	directory: "./src/app/pages/blog/content/",
+	include: "*.md",
+	schema: z.object({
+		title: z.string(),
+		summary: z.string(),
+		date: z.coerce.date(),
+		author: z.string(),
+		protected: z.boolean().optional(),
+		headerImage: z.string().optional(),
+		headerImageCaption: z.string().optional(),
+	}),
+	transform: async (document, context) => {
+		const html = await compileMarkdown(context, document); // HTML compilation for Workers
+		return {
+			...document,
+			html,
+		};
+	},
 });
 
 export default defineConfig({
-  collections: [posts],
+	collections: [posts],
 });

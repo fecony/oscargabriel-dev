@@ -3,6 +3,8 @@ title: "AI Tricked Me into Learning to Code"
 summary: "Large language models convinced me they'd build everything for me. Bridging the gaps they left behind is how I actually learned to code."
 date: 2025-08-15
 author: Oscar Gabriel
+headerImage: "/images/fantastic-planet.jpg"
+headerImageCaption: "Fantastic Planet (1973) -- I am but a small Om boy being educated by our Draag overlords."
 ---
 
 The first time I tried to learn to code, I was 12 years old staring at a book on HTML in the middle of a Barnes & Noble. After 20 minutes of staring and flipping and getting frustrated, I decided it wasn't for me and went off to find a graphic novel instead.
