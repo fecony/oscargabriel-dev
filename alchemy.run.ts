@@ -7,8 +7,8 @@ const app = await alchemy(APP_NAME, {
   password: process.env.ALCHEMY_PASSWORD!,
 });
 
-const starsCache = await KVNamespace("github-stars-cache", {
-  title: "github-stars-cache",
+const repoCache = await KVNamespace("github-repo-cache", {
+  title: "github-repo-cache",
 });
 
 export const worker = await Redwood("redwood-app", {
@@ -16,7 +16,7 @@ export const worker = await Redwood("redwood-app", {
   adopt: true,
   compatibilityDate: "2025-06-17",
   bindings: {
-    STARS_CACHE: starsCache,
+    REPO_CACHE: repoCache,
     GITHUB_TOKEN: alchemy.secret(process.env.GITHUB_TOKEN!),
     GITHUB_USER_AGENT: process.env.GITHUB_USER_AGENT!,
   },

@@ -11,11 +11,29 @@ export const projects: ProjectItem[] = [
 	{
 		title: "Expense Tracker",
 		description:
-			"A simple expense tracker deployed to Fly.io built with React, Vite, Hono, Neon Postgres, and Kinde Auth. It allows you to add, edit, and delete expenses, and view the total amount of expenses.",
+			"A simple expense tracker deployed to Fly.io built with React, Vite, Hono, Neon Postgres, and Kinde Auth. Add/edit/delete expenses, and view the total amount of expenses.",
 		date: "2024-08-12",
 		liveUrl: "https://parsus.fly.dev",
 		githubUrl: "https://github.com/oscabriel/expense-tracker",
 		repo: { owner: "oscabriel", name: "expense-tracker" },
+	},
+	{
+		title: "Next Chat App",
+		description:
+			"An AI chat interface built with Next.js, Vercel AI SDK, OpenAI, Vercel Postgres, and NextAuth. Includes a streaming chat interface and a chat history.",
+		date: "2024-11-24",
+		liveUrl: "https://next-chat-app-oscabriel.vercel.app",
+		githubUrl: "https://github.com/oscabriel/next-chat-app",
+		repo: { owner: "oscabriel", name: "next-chat-app" },
+	},
+	{
+		title: "Better Auth Tutorial",
+		description:
+			"A comprehensive tutorial project demonstrating a complex authentication flow with Better Auth. Built with Next.js, Neon Postgres, Prisma, and Resend.",
+		date: "2025-02-27",
+		liveUrl: "https://better-auth-tutorial.vercel.app",
+		githubUrl: "https://github.com/oscabriel/better-auth-tutorial",
+		repo: { owner: "oscabriel", name: "better-auth-tutorial" },
 	},
 	{
 		title: "Better Cloud",
@@ -29,7 +47,7 @@ export const projects: ProjectItem[] = [
 	{
 		title: "Turbo Cloud",
 		description:
-			"A monorepo starter kit for building web applications with Turborepo, Vite, Hono, and Cloudflare, based on Better Cloud.",
+			"A monorepo starter kit for building web apps with Turborepo, Vite, Hono, and Cloudflare, based on Better Cloud.",
 		date: "2025-05-06",
 		liveUrl: "https://turbo-cloud.oscargabriel.workers.dev",
 		githubUrl: "https://github.com/oscabriel/turbo-cloud",
@@ -47,7 +65,7 @@ export const projects: ProjectItem[] = [
 	{
 		title: "Portfolio Site",
 		description:
-			"My portfolio site (this very site!) built with RedwoodSDK, Alchemy, Tailwind + shadcn/ui, Cloudflare KV, and Content Collections.",
+			"This exact site you're on, built with RedwoodSDK, Alchemy, Tailwind + shadcn/ui, Cloudflare KV, and Content Collections.",
 		date: "2025-07-13",
 		liveUrl: "https://oscargabriel.dev",
 		githubUrl: "https://github.com/oscabriel/oscargabriel-dev",
