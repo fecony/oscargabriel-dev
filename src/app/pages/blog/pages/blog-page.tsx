@@ -38,9 +38,6 @@ export function BlogPage() {
 				<div className="mx-auto max-w-3xl">
 					<div className="mb-8">
 						<h1 className="mb-6 font-bold text-5xl">Blog</h1>
-						<p className="text-base text-muted-foreground sm:text-lg">
-							Latest articles and updates
-						</p>
 					</div>
 
 					<div className="space-y-6">
@@ -92,7 +89,7 @@ export function BlogPage() {
 											</p>
 											<a
 												href={`/blog/${slug}`}
-												className="font-medium text-primary text-xs transition-colors hover:text-primary/80 sm:text-sm"
+												className="font-medium text-primary/90 transition-colors hover:text-primary hover:underline"
 											>
 												Read more →
 											</a>

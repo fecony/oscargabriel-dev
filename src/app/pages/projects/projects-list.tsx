@@ -1,3 +1,6 @@
+import { TZDate } from "@date-fns/tz";
+import { format } from "date-fns";
+
 import { getRepoLastCommitDate, getRepoStars } from "./functions";
 import type { ProjectItem } from "./projects.data";
 import { projects } from "./projects.data";
@@ -10,6 +13,11 @@ import {
 } from "@/app/components/ui/card";
 
 export async function ProjectsList() {
+	console.log(
+		"[ProjectsList] Processing projects:",
+		projects.map((p) => `${p.repo.owner}/${p.repo.name}`),
+	);
+
 	const [stars, lastCommitDates] = await Promise.all([
 		Promise.all(
 			projects.map((p) =>
@@ -23,7 +31,12 @@ export async function ProjectsList() {
 		),
 	]);
 
-	const items: ProjectItem[] = [...projects]
+	type EnrichedProjectItem = ProjectItem & {
+		lastCommitDate: string | null;
+		stars: number | null;
+	};
+
+	const items: EnrichedProjectItem[] = [...projects]
 		.map((project, idx) => ({
 			...project,
 			lastCommitDate: lastCommitDates[idx],
@@ -48,24 +61,19 @@ export async function ProjectsList() {
 								<CardTitle className="text-xl sm:text-2xl">{p.title}</CardTitle>
 								<p className="text-muted-foreground text-sm italic">
 									Last updated:{" "}
-									{(p as any).lastCommitDate
-										? new Date((p as any).lastCommitDate).toLocaleDateString(
-												"en-US",
-												{
-													year: "numeric",
-													month: "long",
-													day: "numeric",
-												},
+									{p.lastCommitDate
+										? format(
+												new TZDate(p.lastCommitDate, "America/Los_Angeles"),
+												"MMMM d, yyyy",
 											)
-										: new Date(p.date).toLocaleDateString("en-US", {
-												year: "numeric",
-												month: "long",
-												day: "numeric",
-											})}
+										: format(
+												new TZDate(p.date, "America/Los_Angeles"),
+												"MMMM d, yyyy",
+											)}
 								</p>
 							</div>
 							<Badge variant="secondary" className="px-2.5 text-base">
-								⭐ {(p as any).stars ?? "—"}
+								⭐ {p.stars ?? "—"}
 							</Badge>
 						</div>
 					</CardHeader>
@@ -76,7 +84,7 @@ export async function ProjectsList() {
 						<div className="flex gap-4">
 							<a
 								href={p.liveUrl}
-								className="font-medium text-primary transition-colors hover:text-primary/80"
+								className="font-medium text-primary/90 transition-colors hover:text-primary hover:underline"
 							>
 								Visit →
 							</a>

@@ -57,7 +57,7 @@ export async function getRepoStars({
 		if (stars !== null) {
 			try {
 				await env.REPO_CACHE.put(cacheKey, String(stars), {
-					expirationTtl: 3600,
+					expirationTtl: 300,
 				});
 			} catch (e) {
 				console.error("[getRepoStars] kv write error", e);
@@ -96,7 +96,8 @@ export async function getRepoLastCommitDate({
 	}
 
 	try {
-		const response = await fetch(`${url}?per_page=1`, { headers });
+		const requestUrl = `${url}?per_page=1`;
+		const response = await fetch(requestUrl, { headers });
 
 		if (!response.ok) {
 			const body = await response.text().catch(() => "");
@@ -114,12 +115,15 @@ export async function getRepoLastCommitDate({
 		}>;
 
 		const lastCommitDate = data[0]?.commit?.committer?.date;
-		if (!lastCommitDate) return null;
+
+		if (!lastCommitDate) {
+			return null;
+		}
 
 		// Write to KV for future requests (best-effort)
 		try {
 			await env.REPO_CACHE.put(cacheKey, lastCommitDate, {
-				expirationTtl: 3600,
+				expirationTtl: 300,
 			});
 		} catch (e) {
 			console.error("[getRepoLastCommitDate] kv write error", e);
