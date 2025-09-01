@@ -4,7 +4,7 @@ summary: "Large language models convinced me they'd build everything for me. Bri
 date: 2025-08-15
 author: Oscar Gabriel
 headerImage: "/images/fantastic-planet.jpg"
-headerImageCaption: "Fantastic Planet (1973) -- I am but a small Om boy being educated by our Draag overlords."
+headerImageCaption: "Fantastic Planet (1973)"
 ---
 
 The first time I tried to learn to code, I was 12 years old staring at a book on HTML in the middle of a Barnes & Noble. After 20 minutes of staring and flipping and getting frustrated, I decided it wasn't for me and went off to find a graphic novel instead.

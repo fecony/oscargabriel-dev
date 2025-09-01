@@ -58,7 +58,7 @@ export function BlogPost({ params }: RequestInfo) {
 	return (
 		<>
 			{/* SEO and OpenGraph Meta Tags */}
-			<title>{post.title} | Oscar Gabriel</title>
+			<title>{`${post.title} | Oscar Gabriel`}</title>
 			<meta name="description" content={post.summary} />
 
 			{/* Open Graph / Facebook */}

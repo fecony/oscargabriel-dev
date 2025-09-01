@@ -29,9 +29,11 @@ export const worker = await Redwood("redwood-app", {
   ],
 });
 
-await WranglerJson("wrangler", {
+await WranglerJson({
   worker,
+  path: "wrangler.jsonc",
 });
+
 
 if (app.stage === "prod") {
   console.log({

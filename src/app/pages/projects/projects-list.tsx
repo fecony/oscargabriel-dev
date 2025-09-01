@@ -13,11 +13,6 @@ import {
 } from "@/app/components/ui/card";
 
 export async function ProjectsList() {
-	console.log(
-		"[ProjectsList] Processing projects:",
-		projects.map((p) => `${p.repo.owner}/${p.repo.name}`),
-	);
-
 	const [stars, lastCommitDates] = await Promise.all([
 		Promise.all(
 			projects.map((p) =>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
+@import "highlight.js/styles/base16/dracula.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -187,4 +188,37 @@ body {
 	html {
 		overflow-y: scroll;
 	}
+}
+
+/* Syntax highlighting customizations */
+.hljs {
+	border-radius: 0.5rem !important;
+	font-family: var(--font-mono) !important;
+	padding: 0.125rem 0.25rem !important;
+}
+
+/* Ensure code blocks in prose have proper styling */
+.prose pre {
+	background: oklch(0.2046 0 0) !important;
+	padding: 1.5rem !important;
+	border-radius: 0.5rem !important;
+}
+
+.prose pre code {
+	background: oklch(0.2046 0 0) !important;
+	color: oklch(1 0 0) !important;
+	padding: 0.125rem 0.25rem !important;
+}
+
+/* Style inline code elements */
+.prose code {
+	background-color: oklch(0.2046 0 0) !important;
+	color: oklch(1 0 0) !important;
+	font-family: var(--font-mono) !important;
+	padding: 0.125rem 0.25rem !important;
+}
+
+.prose code::before,
+.prose code::after {
+	content: none !important;
 }
