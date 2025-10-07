@@ -29,13 +29,12 @@ export const worker = await Redwood("redwood-app", {
   ],
 });
 
-await WranglerJson({
-  worker,
-  path: "wrangler.jsonc",
-});
-
-
 if (app.stage === "prod") {
+  await WranglerJson({
+    worker,
+    path: "wrangler.jsonc",
+  });
+  
   console.log({
     url: `https://${process.env.CUSTOM_DOMAIN}`,
   });

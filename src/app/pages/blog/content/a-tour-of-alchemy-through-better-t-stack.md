@@ -39,7 +39,7 @@ It's not super important for what we're doing in this tour, but here's the stack
 
 If you're unfamiliar with [Alchemy](https://alchemy.run/), then I'm delighted to be the first to show it to you. 
 
-Infrastructure-as-Code ("IaC") is the incredible idea of pre-defining your app's infra configuration in code, rather than doing it manually in a cloud console after finishing your app. And Alchemy's not like other IaC offerings; it's written in pure Typescript (already established that that's a win) that doesn't depend on one or more wrapper layers above it to work, that allows you to add and delete and completely redo everything with ease. Alchemy also features:
+Infrastructure-as-Code ("IaC") is the incredible idea of pre-defining your app's infra configuration in code, rather than doing it manually in a cloud console after finishing your app. And Alchemy's not like other IaC offerings; it's written in pure Typescript (already established that that's a win), that doesn't depend on one or more wrapper layers above it to work, that is easy to understand and super flexible. Alchemy also features:
 
 - **Cloudflare-first approach**: While other IaC tools treat Cloudflare as an afterthought, Alchemy is purpose-built for the edge with first-class support for Workers, D1, KV, Durable Objects, and the entire CF ecosystem. We're bullish on Cloudflare around here.
 
@@ -145,7 +145,7 @@ await Exec("db-generate", {
 
 **Finalization**: The `await app.finalize()` call at the end ensures all resources are properly created and configured before deployment completes. Additionally, if you ever remove a previously-existing resource from your alchemy file, `finalize` will also clean up your alchemy state and delete that resource.
 
-## SQLite at the Edge with `db`
+## SQLite at the Edge with `D1Database`
 
 Cloudflare D1 is the easiest choice for database when deploying to Cloudflare, and Alchemy makes it effortless to configure:
 
@@ -161,7 +161,7 @@ const db = await D1Database("database", {
 
 **Resource binding**: The database resource can be referenced directly in other parts of your configuration (like the server worker bindings), allowing you to easily access your database across your app's server logic.
 
-## Static Frontend with `web`
+## Static Frontend with `Vite`
 
 Cloudflare Workers manages your frontend for you with intelligent static asset handling:
 
@@ -188,7 +188,7 @@ export const web = await Vite("web", {
 
 **Global CDN deployment**: Static assets are automatically distributed across Cloudflare's global CDN network, ensuring fast loading times for everyone.
 
-## API Worker and Bindings with `server`
+## API Worker and Bindings with `Worker`
 
 Your backend API runs as a Cloudflare Worker with access to all your infrastructure resources:
 
@@ -212,7 +212,7 @@ export const server = await Worker("server", {
 });
 ```
 
-**Resource bindings**: The `DB: db` binding automatically gives your Worker access to the D1 database created above. It's 
+**Resource bindings**: The `DB: db` binding automatically gives your Worker access to the D1 database created above.
 
 **Secret management**: The `alchemy.secret()` wrapper ensures sensitive values like API keys are encrypted in your state files and securely injected into your Worker at runtime. Non-secret environment variables simply passed through with dotenv and are defined in plaintext in your state files.
 
@@ -244,7 +244,7 @@ Then, we create separate environment files for each stage:
 - `.env.dev` - Development configurations with relaxed CORS, debug logging, and local service endpoints
 - `.env.prod` - Production settings with strict security policies and production API keys
 
-Deploy to different stages with `ALCHEMY_STAGE=prod bun alchemy deploy` or `ALCHEMY_STAGE=dev bun alchemy dev`. There are ways to handle only your local secrets in your local files, and only your real production secrets in Cloudflare itself, but I've found this method of keeping each stage isolated, all within the same local codebase, to be very convenient.
+Make use of the different stages with `ALCHEMY_STAGE=prod bun alchemy deploy` or `ALCHEMY_STAGE=dev bun alchemy dev`. You could even add `test` or `staging` stages, as well. There are ways to handle only your local secrets in your local files, and only your real production secrets in Cloudflare itself, but I've found this method of keeping each stage isolated, all within the same local codebase, to be very convenient.
 
 ### Adding More Cloudflare Resources
 

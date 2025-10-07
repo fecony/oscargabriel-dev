@@ -89,7 +89,7 @@ export function BlogPage() {
 											</p>
 											<a
 												href={`/blog/${slug}`}
-												className="font-medium text-primary/90 transition-colors hover:text-primary hover:underline"
+												className="font-medium text-primary transition-colors hover:text-primary hover:underline"
 											>
 												Read more →
 											</a>

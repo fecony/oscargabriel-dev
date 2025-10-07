@@ -71,4 +71,13 @@ export const projects: ProjectItem[] = [
 		githubUrl: "https://github.com/oscabriel/oscargabriel-dev",
 		repo: { owner: "oscabriel", name: "oscargabriel-dev" },
 	},
+	{
+		title: "Better Chat",
+		description:
+			"Better Chat through Durable Objects. Built with AI SDK v5, Tanstack Router, Hono, oRPC, and a dual-database approach with D1 and per-user Durable Objects managed by Drizzle.",
+		date: "2025-10-06",
+		liveUrl: "https://chat.oscargabriel.dev",
+		githubUrl: "https://github.com/oscabriel/better-chat",
+		repo: { owner: "oscabriel", name: "better-chat" },
+	},
 ];

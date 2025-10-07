@@ -19,7 +19,32 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
 				rel="stylesheet"
 			/>
 			<link rel="icon" href="/favicon.svg" />
-			<script src="/theme-script.js" />
+			<script>
+				{`(() => {
+					try {
+						const theme = localStorage.getItem("app-theme") || "system";
+						const root = document.documentElement;
+
+						root.classList.remove("light", "dark");
+
+						if (theme === "system") {
+							const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+								.matches
+								? "dark"
+								: "light";
+							root.classList.add(systemTheme);
+						} else {
+							root.classList.add(theme);
+						}
+					} catch {
+						const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+							.matches
+							? "dark"
+							: "light";
+						document.documentElement.classList.add(systemTheme);
+					}
+				})();`}
+			</script>
 			<link rel="modulepreload" href="/src/client.tsx" />
 			<link rel="stylesheet" href={styles} />
 		</head>

@@ -79,7 +79,7 @@ export async function ProjectsList() {
 						<div className="flex gap-4">
 							<a
 								href={p.liveUrl}
-								className="font-medium text-primary/90 transition-colors hover:text-primary hover:underline"
+								className="font-medium text-primary transition-colors hover:text-primary hover:underline"
 							>
 								Visit →
 							</a>
