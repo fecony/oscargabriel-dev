@@ -1,9 +1,5 @@
 import { TZDate } from "@date-fns/tz";
 import { format } from "date-fns";
-
-import { getRepoLastCommitDate, getRepoStars } from "./functions";
-import type { ProjectItem } from "./projects.data";
-import { projects } from "./projects.data";
 import { Badge } from "@/app/components/ui/badge";
 import {
 	Card,
@@ -11,6 +7,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/app/components/ui/card";
+import { getRepoLastCommitDate, getRepoStars } from "./functions";
+import type { ProjectItem } from "./projects.data";
+import { projects } from "./projects.data";
 
 export async function ProjectsList() {
 	const [stars, lastCommitDates] = await Promise.all([
