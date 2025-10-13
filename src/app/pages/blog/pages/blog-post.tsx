@@ -1,5 +1,8 @@
 import { allPosts, type Post } from "content-collections";
 import type { RequestInfo } from "rwsdk/worker";
+import { CodeBlockWrapper } from "@/app/components/code-block-wrapper";
+import { TableOfContents } from "@/app/components/table-of-contents";
+import { extractHeadingsFromHtml } from "@/app/utils/extract-headings";
 
 export function BlogPost({ params }: RequestInfo) {
 	const { slug } = params;
@@ -55,6 +58,11 @@ export function BlogPost({ params }: RequestInfo) {
 		);
 	}
 
+	// Extract headings for table of contents (only h2 elements)
+	const headings = extractHeadingsFromHtml(post.html).filter(
+		(h) => h.level === 2,
+	);
+
 	return (
 		<>
 			{/* SEO and OpenGraph Meta Tags */}
@@ -85,6 +93,14 @@ export function BlogPost({ params }: RequestInfo) {
 			<link rel="canonical" href={`https://oscargabriel.dev/blog/${slug}`} />
 
 			<div className="bg-background px-4">
+				{/* Table of Contents - fixed to the left */}
+				{headings.length > 0 && (
+					<aside className="fixed left-4 hidden w-64 xl:block">
+						<TableOfContents headings={headings} />
+					</aside>
+				)}
+
+				{/* Main content - centered */}
 				<div className="mx-auto max-w-3xl">
 					<article>
 						<header className="mb-8">
@@ -119,23 +135,25 @@ export function BlogPost({ params }: RequestInfo) {
 								)}
 							</figure>
 						)}
-						<div
-							className="prose prose-gray dark:prose-invert prose-headings:mt-6 prose-headings:mb-3 prose-p:mb-3 max-w-none prose-code:bg-muted prose-pre:bg-muted prose-headings:font-semibold prose-a:text-primary prose-p:text-base prose-p:leading-relaxed prose-headings:tracking-tight prose-a:underline prose-a:decoration-primary/70 prose-a:hover:text-primary prose-a:hover:decoration-primary"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: Blog content is trusted markdown
-							dangerouslySetInnerHTML={{ __html: post.html }}
-						/>
+						<CodeBlockWrapper>
+							<div
+								className="prose prose-gray dark:prose-invert prose-li:my-1 prose-ol:my-4 prose-ul:my-4 prose-headings:mt-8 prose-headings:mb-4 prose-p:mb-4 max-w-none prose-headings:scroll-mt-24 prose-headings:font-semibold prose-a:text-primary prose-p:text-base prose-p:leading-7 prose-headings:tracking-tight prose-a:underline prose-a:decoration-primary/70 prose-a:hover:text-primary prose-a:hover:decoration-primary"
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: Blog content is trusted markdown
+								dangerouslySetInnerHTML={{ __html: post.html }}
+							/>
+						</CodeBlockWrapper>
+						<footer className="mt-8 mb-8">
+							<div className="mb-4 h-px bg-border" />
+							<div>
+								<a
+									href="/blog"
+									className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 font-medium text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								>
+									← Back to all posts
+								</a>
+							</div>
+						</footer>
 					</article>
-					<footer className="mt-8 mb-8">
-						<div className="mb-4 h-px bg-border" />
-						<div>
-							<a
-								href="/blog"
-								className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 font-medium text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-							>
-								← Back to all posts
-							</a>
-						</div>
-					</footer>
 				</div>
 			</div>
 		</>

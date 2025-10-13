@@ -84,7 +84,7 @@ export function LandingPage() {
 						href="/blog"
 						className="text-primary underline decoration-primary/70 transition-colors hover:text-primary hover:decoration-primary"
 					>
-						Read my first blog post →
+						Read my latest blog post →
 					</a>
 				</div>
 

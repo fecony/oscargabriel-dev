@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "highlight.js/styles/base16/dracula.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -181,35 +180,99 @@ body {
 	}
 }
 
-/* Syntax highlighting customizations */
-.hljs {
-	border-radius: 0.5rem !important;
-	font-family: var(--font-mono) !important;
-	padding: 0.125rem 0.25rem !important;
-}
-
-/* Ensure code blocks in prose have proper styling */
+/* rehype-pretty-code syntax highlighting */
 .prose pre {
-	background: oklch(0.216 0.006 56.043) !important;
 	padding: 1.5rem !important;
 	border-radius: 0.5rem !important;
+	overflow-x: auto;
+	background-color: oklch(0.97 0 0) !important;
+	border: 1px solid oklch(0.869 0.005 56.366) !important;
 }
 
-/* Style inline code elements */
-.prose code {
-	background-color: oklch(0.216 0.006 56.043) !important;
-	color: oklch(0.97 0 0) !important;
+.dark .prose pre {
+	background-color: oklch(0.16 0.006 56.043) !important;
+	border: 1px solid oklch(0.374 0.01 67.558) !important;
+}
+
+/* Dual theme support for syntax highlighting */
+.prose pre code span {
+	color: var(--shiki-light);
+}
+
+.dark .prose pre code span {
+	color: var(--shiki-dark);
+}
+
+.prose pre > code {
+	display: grid;
 	font-family: var(--font-mono) !important;
-	padding: 0.125rem 0.25rem !important;
+	font-size: 0.875rem;
+	line-height: 1.7;
+	background: transparent !important;
+	padding: 0 !important;
 }
 
-.prose pre code {
-	background: oklch(0.216 0.006 56.043) !important;
-	color: oklch(0.97 0 0) !important;
-	padding: 0.125rem 0.25rem !important;
+/* Line highlighting */
+.prose pre code [data-line] {
+	padding: 0 1.25rem;
+	border-left: 2px solid transparent;
+}
+
+.prose pre code [data-highlighted-line] {
+	background-color: oklch(0.25 0.02 56.043);
+	border-left-color: oklch(0.666 0.179 58.318);
+}
+
+/* Inline code */
+.prose :not(pre) > code {
+	font-weight: 500 !important;
+	font-family: var(--font-mono) !important;
+	font-size: 0.875rem !important;
+	line-height: 1.5 !important;
+	border: 1px solid color-mix(in oklch, var(--primary) 40%, transparent) !important;
+	background-color: color-mix(in oklch, var(--primary) 20%, transparent) !important;
+	padding: 0.125rem 0.5rem !important;
+	color: var(--foreground) !important;
 }
 
 .prose code::before,
 .prose code::after {
 	content: none !important;
+}
+
+/* Heading anchors */
+.prose .heading-anchor {
+	text-decoration: none;
+	color: inherit;
+	transition: color 0.2s ease;
+}
+
+.prose .heading-anchor:hover {
+	color: oklch(0.666 0.179 58.318);
+}
+
+/* Tables */
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 2rem 0;
+}
+
+.prose table thead {
+	border-bottom: 2px solid oklch(0.374 0.01 67.558);
+}
+
+.prose table th {
+	padding: 0.75rem 1rem;
+	text-align: left;
+	font-weight: 600;
+}
+
+.prose table td {
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid oklch(0.374 0.01 67.558);
+}
+
+.prose table tbody tr:hover {
+	background-color: oklch(0.216 0.006 56.043);
 }

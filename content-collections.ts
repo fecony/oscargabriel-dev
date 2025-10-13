@@ -1,8 +1,11 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import { compileMarkdown } from "@content-collections/markdown";
-import { z } from "zod";
-import rehypeHighlight from "rehype-highlight";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypePrettyCode from "rehype-pretty-code";
 import rehypeRaw from "rehype-raw";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
+import { z } from "zod";
 
 const posts = defineCollection({
 	name: "posts",
@@ -20,7 +23,32 @@ const posts = defineCollection({
 	transform: async (document, context) => {
 		try {
 			const html = await compileMarkdown(context, document, {
-				rehypePlugins: [rehypeRaw, rehypeHighlight],
+				remarkPlugins: [remarkGfm],
+				rehypePlugins: [
+					rehypeRaw,
+					rehypeSlug,
+					[
+						rehypeAutolinkHeadings,
+						{
+							behavior: "wrap",
+							properties: {
+								className: ["heading-anchor"],
+								ariaLabel: "Link to section",
+							},
+						},
+					],
+					[
+						rehypePrettyCode,
+						{
+							theme: {
+								light: "github-light",
+								dark: "github-dark",
+							},
+							keepBackground: false,
+							defaultLang: "plaintext",
+						},
+					],
+				],
 			});
 			return {
 				...document,
