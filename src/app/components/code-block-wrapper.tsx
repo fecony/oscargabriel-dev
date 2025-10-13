@@ -22,12 +22,17 @@ export function CodeBlockWrapper({ children }: CodeBlockWrapperProps) {
 			// Get the text content for copying
 			const text = codeElement.textContent || "";
 
-			// Make the pre element relative for absolute positioning
-			(block as HTMLElement).style.position = "relative";
+			// Create a wrapper div to position the button relative to
+			const wrapper = document.createElement("div");
+			wrapper.style.position = "relative";
+
+			// Insert wrapper before the pre element and move pre inside it
+			block.parentNode?.insertBefore(wrapper, block);
+			wrapper.appendChild(block);
 
 			// Create a container for the copy button
 			const buttonContainer = document.createElement("div");
-			block.appendChild(buttonContainer);
+			wrapper.appendChild(buttonContainer);
 
 			// Render the copy button
 			const root = createRoot(buttonContainer);

@@ -7,7 +7,7 @@ headerImage: "/images/pinky-and-the-brain.jpg"
 headerImageCaption: "Pinky and the Brain (1995)"
 ---
 
-When Theo announced his ["T3 Chat Cloneathon"](https://cloneathon.t3.chat) several months ago, I had one immediate thought: AI chat powered by Durable Objects. Now, several months *after* the closing of that competition, I finally made that thought a reality with [Better Chat](https://chat.oscargabriel.dev). And I'd like to tell you about its unique dual-database approach compared to the typical AI chat app.
+When Theo announced his ["T3 Chat Cloneathon"](https://cloneathon.t3.chat) several months ago, I had one immediate thought: AI chat powered by Durable Objects. Now that I've missed the deadline by another several months, I finally made that thought a reality with [Better Chat](https://chat.oscargabriel.dev). And I'd like to tell you about its unique dual-database approach compared to the typical AI chat app.
 
 At first, the thought was to put everything into a per-user, isolated, SQLite-backed Durable Object: messages, conversations, authz/authn data, user settings, custom API keys for different providers, etc etc. But that quickly proved to be impractical due to the inherent storage constraints of DOs as well as the difficulty of getting absolutely everything to work with them (namely Better Auth and the potential desire for cross-user usage analytics on the admin side).
 
