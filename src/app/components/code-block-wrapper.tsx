@@ -42,9 +42,11 @@ export function CodeBlockWrapper({ children }: CodeBlockWrapperProps) {
 
 		// Cleanup
 		return () => {
-			for (const root of roots) {
-				root.unmount();
-			}
+			queueMicrotask(() => {
+				for (const root of roots) {
+					root.unmount();
+				}
+			});
 		};
 	}, []);
 

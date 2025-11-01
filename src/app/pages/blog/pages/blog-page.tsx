@@ -52,12 +52,12 @@ export function BlogPage() {
 								return (
 									<Card
 										key={post._meta.path}
-										className="hover:-translate-y-1 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
+										className="hover:-translate-y-1 gap-3 transition-all duration-200 hover:border-b-4 hover:border-b-primary"
 									>
 										<CardHeader>
 											<div className="flex items-start justify-between gap-4">
 												<div className="flex-1">
-													<CardTitle className="mb-2 text-lg leading-tight sm:text-xl">
+													<CardTitle className="mb-1 text-lg leading-tight sm:text-xl">
 														<a
 															href={`/blog/${slug}`}
 															className="text-foreground transition-colors hover:text-primary"

@@ -230,7 +230,11 @@ body {
 	font-size: 0.875rem !important;
 	line-height: 1.5 !important;
 	border: 1px solid color-mix(in oklch, var(--primary) 40%, transparent) !important;
-	background-color: color-mix(in oklch, var(--primary) 20%, transparent) !important;
+	background-color: color-mix(
+		in oklch,
+		var(--primary) 20%,
+		transparent
+	) !important;
 	padding: 0.125rem 0.5rem !important;
 	color: var(--foreground) !important;
 }
