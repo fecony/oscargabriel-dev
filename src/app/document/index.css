@@ -182,7 +182,7 @@ body {
 
 /* rehype-pretty-code syntax highlighting */
 .prose pre {
-	padding: 1.5rem !important;
+	padding: 1rem !important;
 	border-radius: 0.5rem !important;
 	overflow-x: auto;
 	background-color: oklch(0.97 0 0) !important;
@@ -214,7 +214,7 @@ body {
 
 /* Line highlighting */
 .prose pre code [data-line] {
-	padding: 0 1.25rem;
+	padding: 0 0.75rem;
 	border-left: 2px solid transparent;
 }
 
