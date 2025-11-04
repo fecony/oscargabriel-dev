@@ -255,6 +255,23 @@ body {
 	color: var(--primary);
 }
 
+/* Lists */
+.prose ol {
+	padding-left: 2.25rem;
+	list-style-type: decimal;
+	list-style-position: outside;
+}
+
+.prose ul {
+	padding-left: 1.125rem;
+	list-style-type: disc;
+	list-style-position: outside;
+}
+
+.prose li {
+	display: list-item;
+}
+
 /* Tables */
 .prose table {
 	width: 100%;

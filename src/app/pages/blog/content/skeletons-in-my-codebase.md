@@ -20,7 +20,7 @@ I'm writing this because I had to figure all of this out myself while building [
 Along the way, I kept running into the same kinds of problems: hidden gotchas that would haunt my app until I addressed them properly. Route conflicts that only surfaced well after scaffolding. Authentication race conditions that caused jarring page flashes. Loading states that felt broken. These are our "skeletons", the skulkers rattling around causing small but critical issues in production. This blog post is about identifying those skeletons and clearing them out of your ~~closet~~ codebase.
 
 ---
-## Skeleton #1: Route Organization & Layouts
+## Skeleton #1: Router Layouts
 
 When building a real application with TanStack Router, you quickly run into organizational questions: Where do files go? How do you share layouts between routes? How do auth guards apply to child routes? When do you use pathless layouts vs grouped routes?
 
@@ -85,13 +85,7 @@ apps/web/src/routes/
             └── delete-account-dialog.tsx
 ```
 
-**Why this structure works:**
-
-1. **Feature colocation** - Everything related to `chat` lives under `/routes/chat/`
-2. **Layout via `route.tsx`** - Parent routes define shared UI and guards for their children
-3. **Private components (`-components/`)** - Scoped to that route feature only
-4. **Clear boundaries** - Each major feature has its own directory
-5. **Flat when possible** - Static pages stay at the top level
+This structure works well because it enables feature colocation (everything related to `chat` lives under `/routes/chat/`), layouts via `route.tsx` (parent routes define shared UI and guards for their children), private components scoped to each route feature (`-components/`), clear boundaries (each major feature has its own directory), and a flat hierarchy where possible (static pages stay at the top level).
 
 ### Parents as Layouts: The Key Pattern
 
@@ -116,7 +110,7 @@ Now ALL child routes (`/chat/$chatId`, `/chat/settings`, etc.) inherit:
 - Error handling (`ChatError`)
 - Shared layout (`ChatShell`)
 
-**Why this matters:** By checking auth once in the parent's `beforeLoad`, we call Better Auth's `useSession` hook once per feature area rather than in every child component. This keeps our total function calls in check and prevents redundant session fetches.
+By checking auth once in the parent's `beforeLoad`, child routes inherit protection without repeating guard logic. Better Auth's `useSession` hook is called exactly once in `AuthProvider`, then accessed everywhere via router context—zero redundant session fetches.
 
 Child routes just focus on their specific data and rendering:
 
@@ -166,12 +160,7 @@ export const Route = createFileRoute('/settings')({
 })
 ```
 
-**Why redirect in `beforeLoad` instead of `useEffect`?**
-
-1. **Happens before component renders** - No flash of layout before redirect
-2. **SSR-compatible** - Works with server-side rendering (if you add it)
-3. **Cleaner** - No hooks, no component-level redirect logic
-4. **Consistent** - All navigation decisions happen in the same place
+Redirecting in `beforeLoad` instead of `useEffect` offers several advantages. It happens before the component renders (no flash of layout before redirect), works with server-side rendering if you add it, keeps code cleaner (no hooks, no component-level redirect logic), and ensures consistency by keeping all navigation decisions in the same place.
 
 Compare to the `useEffect` approach:
 
@@ -201,13 +190,13 @@ This works, but:
 The `beforeLoad` approach is cleaner and more aligned with TanStack Router's design.
 
 ---
-## Skeleton #2: The Auth Flash & Race Conditions
+## Skeleton #2: Auth Flash
 
-Now that we have a solid route structure, let's tackle the most insidious bug in authentication flows: the flash.
+Now that we have a solid route structure, let's tackle the dreaded flash, the most insidious bug in authentication flows.
 
-### The Problem: Auth Has Three States, Not Two
+### The Problem: Race Conditions & Redirect Loops
 
-Here's what our initial authentication guard looked like:
+Here's what our initial authentication guard looked like.
 
 ```tsx
 // ❌ Naive implementation
@@ -221,7 +210,7 @@ export function requireAuthenticated({ auth, location }) {
 }
 ```
 
-Looks reasonable, right? But here's what happens in production:
+Looks reasonable, right? But in production, the following race condition occurs.
 
 1. User navigates to `/chat` (protected route)
 2. Auth session is still fetching from the server
@@ -233,45 +222,22 @@ Looks reasonable, right? But here's what happens in production:
 
 The result is a jarring flash between pages. Feels broken, even though it eventually works.
 
-The breakthrough for me (obvious as it may be to some of y'all), was that **auth has three states, not two**:
+The breakthrough was realizing that **auth has three states, not two**:
 
-1. **Loading** (`isPending: true`) - We don't know yet
-2. **Authed** (`isPending: false, isAuthenticated: true`) - User is logged in
-3. **Unauthed** (`isPending: false, isAuthenticated: false`) - User is not logged in
+1. **Loading** (`isPending: true`)
+2. **Authed** (`isPending: false, isAuthenticated: true`)
+3. **Unauthed** (`isPending: false, isAuthenticated: false`). Our naive guard only handled the latter two.
 
-Our naive guard only handled states 2 and 3. The fix is to check for state 1, too.
+### The Solution: Block Until Auth Resolves
 
-```tsx
-// ✅ Production-ready guard
-export function requireAuthenticated({ auth, location }) {
-  // Wait for auth to finish loading
-  if (auth.isPending) {
-    return  // Don't make decisions with incomplete data
-  }
-
-  if (!auth.isAuthenticated) {
-    throw redirect({
-      to: '/auth/sign-in',
-      search: { redirect: location.href }
-    })
-  }
-}
-```
-
-One check eliminates the entire class of race conditions. When `isPending` is true, the guard returns early, the route shows its `pendingComponent`, and when auth finishes loading, the router re-evaluates and makes the correct decision.
-
-### Building the Complete Auth System
-
-Let's walk through the four pieces needed for flash-free auth:
-
-#### 1. AuthProvider: Keep It Simple
+Better Chat blocks the entire app from rendering until auth state is known, eliminating race conditions entirely.
 
 ```tsx
-// apps/web/src/lib/auth-context.tsx
-export function AuthProvider({ children }) {
-  const { data: session, isPending } = authClient.useSession()  // ← Only place we call this
+// apps/web/src/components/auth-provider.tsx
+export function AuthProvider({ children }: PropsWithChildren) {
+  const { data: session, isPending, error } = authClient.useSession()
 
-  const value = useMemo(
+  const value = useMemo<AuthContextValue>(
     () => ({
       isAuthenticated: !!session?.user,
       session: session ?? null,
@@ -280,13 +246,158 @@ export function AuthProvider({ children }) {
     [session, isPending]
   )
 
+  if (error) {
+    console.error('Failed to fetch auth session', error)
+  }
+
+  // Block rendering until auth resolves
+  if (isPending) {
+    return (
+      <div className="relative min-h-screen bg-background">
+        <AppBackground />
+      </div>
+    )
+  }
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 ```
 
-This is where Better Auth's `useSession` hook lives, the **only** place we call it in our entire frontend. By calling it once in the provider and passing the result through context, we avoid redundant session checks across the app. Every route guard, every component that needs auth state, all access this single source of truth.
+While `isPending === true`, show a blank screen with our app background image (the block is so brief that a proper loading spinner would reintroduce the flash we're avoiding). Once resolved, Tanstack's RouterProvider mounts and guards execute with **guaranteed resolved auth**.
 
-The key insight for me was to not block rendering here. Let the provider expose `isPending` and let guards and components handle it. This keeps the provider simple, your app performant, and gives you fine-grained control over loading states.
+This makes our route guards remarkably simple:
+
+```tsx
+// apps/web/src/lib/route-guards.ts
+export function requireAuthenticated({ auth, location }) {
+  // No isPending check needed - always resolved by this point
+  if (!auth.isAuthenticated) {
+    throw redirect({
+      to: '/auth/sign-in',
+      replace: true,
+      search: { redirect: location.href }
+    })
+  }
+}
+
+export function redirectIfAuthenticated({ auth, to }) {
+  // No isPending check needed - always resolved by this point
+  if (auth.isAuthenticated) {
+    throw redirect({ to, replace: true })
+  }
+}
+```
+
+### Why Blocking Works: Cookie Cache + Zero Race Conditions
+
+Blocking eliminates race conditions entirely while staying fast thanks to the server-side session `cookieCache` provided by Better Auth.
+
+```tsx
+// apps/server/src/lib/auth.ts
+export const auth = betterAuth({
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    }
+  }
+})
+```
+
+- First session check: database query + signed cookie (100-300ms)
+- Subsequent checks within 5 minutes: cookie read only (~10-50ms).
+
+This makes the blocking pattern viable; only the very first load is a little slower.
+
+**Benefits:**
+- Zero race conditions (guards never see incomplete auth)
+- Simpler guards (no `isPending` checks)
+- Fast after first load (cookie cache)
+- Clean UX (brief blank screen beats redirect flashes)
+- Less code, fewer edge cases
+
+**Tradeoff:** Brief blank screen on initial load for guaranteed correctness.
+
+### Alternative: Non-Blocking with Component-Level Handling
+
+If you need progressive rendering during auth load, you can handle `isPending` at the component level, instead.
+
+```tsx
+// Don't block in provider
+export function AuthProvider({ children }) {
+  const { data: session, isPending } = authClient.useSession()
+
+  // Router mounts immediately, even while auth loads
+  return (
+    <AuthContext.Provider value={{ isPending, isAuthenticated: !!session?.user, session }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+// Guards check auth without isPending (will redirect early if needed)
+export function requireAuthenticated({ auth, location }) {
+  if (!auth.isAuthenticated) {
+    throw redirect({ to: '/auth/sign-in' })
+  }
+}
+
+// Components handle isPending state
+function ChatPage() {
+  const auth = useAuth()
+
+  // Show loading skeleton while auth resolves
+  if (auth.isPending) {
+    return <AppShellSkeleton />
+  }
+
+  // Auth guaranteed resolved - render actual content
+  return <ChatShell>...</ChatShell>
+}
+```
+
+The non-blocking approach offers progressive rendering (header, nav, and static content can show during auth load), lets components control their own loading states, and provides more flexible per-component UX. However, you must handle `isPending` in every protected component, and it's easy to introduce race conditions. Guards might also redirect before auth finishes (causing the flash between pages that was our priority to eliminate).
+
+Choose blocking for guaranteed flash-free simplicity, or choose non-blocking for progressive rendering during initial load.
+
+### Building the Complete Auth System
+
+Let's walk through the pieces needed for our blocking auth pattern.
+
+#### 1. AuthProvider: Block Until Resolved
+
+```tsx
+// apps/web/src/components/auth-provider.tsx
+export function AuthProvider({ children }: PropsWithChildren) {
+  const { data: session, isPending, error } = authClient.useSession()  // ← Only place we call this
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      isAuthenticated: !!session?.user,
+      session: session ?? null,
+      isPending,
+    }),
+    [session, isPending]
+  )
+
+  if (error) {
+    console.error('Failed to fetch auth session', error)
+  }
+
+  // Block rendering until auth resolves
+  if (isPending) {
+    return (
+      <div className="relative min-h-screen bg-background">
+        <AppBackground />
+      </div>
+    )
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+```
+
+Call `useSession` once here to create a single source of truth. Blocking guarantees RouterProvider never mounts while `isPending === true`.
 
 #### 2. Router Context: Wire Auth to Routes
 
@@ -303,44 +414,47 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   notFoundComponent: NotFound,
   errorComponent: ErrorBoundary,
 })
+
+// apps/web/src/main.tsx
+function AppRouter() {
+  const auth = useAuth()  // From AuthContext
+  const routerContext = useMemo(() => ({ orpc, queryClient, auth }), [auth])
+
+  return <RouterProvider router={router} context={routerContext} />
+}
+
+root.render(
+  <AuthProvider>
+    <AppRouter />
+  </AuthProvider>
+)
 ```
 
-This makes `auth` available in every route's `beforeLoad` via `opts.context.auth`. One session hook call in the provider, accessible everywhere through router context.
+This makes `auth` available in every route's `beforeLoad` via `opts.context.auth`.
 
-#### 3. Route Guards: Two Complementary Functions
+#### 3. Route Guards
+
+With auth guaranteed resolved before guards run, no `isPending` checks needed:
 
 ```tsx
 // apps/web/src/lib/route-guards.ts
-
-// Guard #1: Require authentication (for protected routes)
-export function requireAuthenticated({ auth, location, signInPath, redirectOverride, replace }) {
-  if (auth.isPending) {
-    return  // Let route pendingComponent handle loading
-  }
-
+export function requireAuthenticated({ auth, location }) {
   if (!auth.isAuthenticated) {
-    const redirectTarget = redirectOverride ?? location.href ?? location.pathname ?? '/'
+    const redirectTarget = location.href ?? location.pathname ?? '/'
     throw redirect({
-      to: signInPath ?? '/auth/sign-in',
-      replace: replace ?? true,
+      to: '/auth/sign-in',
+      replace: true,
       search: { redirect: redirectTarget },
     })
   }
 }
 
-// Guard #2: Redirect if already authenticated (for public routes)
-export function redirectIfAuthenticated({ auth, to, replace }) {
-  if (auth.isPending) {
-    return  // Let route pendingComponent handle loading
-  }
-
+export function redirectIfAuthenticated({ auth, to }) {
   if (auth.isAuthenticated) {
-    throw redirect({ to, replace: replace ?? true })
+    throw redirect({ to, replace: true })
   }
 }
 ```
-
-Both guards follow the same pattern: check `isPending` first, then make auth decisions. Use `requireAuthenticated` on protected routes, `redirectIfAuthenticated` on auth pages.
 
 ```tsx
 // apps/web/src/routes/chat/route.tsx - Protected route
@@ -352,7 +466,7 @@ export const Route = createFileRoute('/chat')({
     })
   },
   component: ChatLayout,
-  pendingComponent: AppShellSkeleton,  // Shows while isPending
+  pendingComponent: AppShellSkeleton,  // Shows during data loading (not auth)
 })
 ```
 
@@ -370,9 +484,28 @@ export const Route = createFileRoute('/auth/sign-in')({
 })
 ```
 
-#### 4. Component-Level Loading: Own Your State
+#### 4. When Do pendingComponents Actually Show?
 
-Since the `AuthProvider` doesn't block rendering, components that show user state (like a header) need to handle `isPending` themselves:
+With blocking, `pendingComponent` handles **data loading and navigation**, not initial auth:
+
+```tsx
+// /chat/$chatId.tsx
+export const Route = createFileRoute('/chat/$chatId')({
+  loader: async ({ params, context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(...),
+      context.queryClient.ensureQueryData(...),
+    ])
+  },
+  pendingComponent: ChatPageSkeleton,  // Shows during loader
+})
+```
+
+Auth blocks once at startup, then `pendingComponent` handles route transitions.
+
+#### 5. Component UI State: Simple and Clean
+
+Since it's all handles upstream, all other components can trust auth is always resolved.
 
 ```tsx
 // apps/web/src/components/navigation/user-menu.tsx
@@ -380,16 +513,6 @@ export function UserMenu() {
   const auth = useAuth()
   const navigate = useNavigate()
 
-  // Show loading spinner while auth is pending
-  if (auth.isPending) {
-    return (
-      <div className="flex h-8 w-8 items-center justify-center">
-        <Loader2 className="size-4 animate-spin" />
-      </div>
-    )
-  }
-
-  // Show sign-in button for unauthenticated users
   if (!auth.isAuthenticated) {
     return (
       <Button variant="outline" onClick={() => navigate({ to: '/auth/sign-in' })}>
@@ -398,7 +521,6 @@ export function UserMenu() {
     )
   }
 
-  // Show user menu for authenticated users
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -410,18 +532,9 @@ export function UserMenu() {
 }
 ```
 
-**Why this approach works:**
-
-1. **Explicit** - Each component clearly shows what it's waiting for
-2. **Performant** - One `useSession` call in provider, accessed via context everywhere
-3. **Flexible** - Components control their own loading UX (spinner, skeleton, etc.)
-4. **No flash** - Guards prevent wrong routes, components prevent wrong content
-
-This is the complete system. Auth state loads once, guards protect routes, components show appropriate UI. No race conditions, no flashing. Clear eyes, clean user experience, can't lose.
-
 ---
 
-## Skeleton #3: Polish & Production Patterns
+## Skeleton #3: Frontend Polish
 
 With route structure and auth sorted, let's tackle three quick wins for production-ready UX that came up on my journey.
 
@@ -442,10 +555,7 @@ export const Route = createFileRoute('/chat/$chatId')({
 })
 ```
 
-**Skeleton tips:**
-- Match the final layout structure
-- Simple rectangles work fine for dynamic content
-- Match static content exactly to minimize visual flicker
+When building skeletons, match the final layout structure, use simple rectangles for dynamic content, and match static content exactly to minimize visual flicker.
 
 ### Error Boundaries: Graceful Failures
 
@@ -489,10 +599,7 @@ function ChatError({ error }: ErrorComponentProps) {
 }
 ```
 
-**Key points:**
-- Validate in loaders (fail before component renders)
-- Route errors provide better UX than root catch-all
-- Show error details in dev, hide in production
+Validate in loaders to fail before component renders, use route-specific errors for better UX than root catch-all, and show error details in dev while hiding them in production.
 
 ### Search Params: Validate When You Need Them
 
@@ -567,11 +674,7 @@ function SignInRoute() {
 }
 ```
 
-**Security rules (when using search params):**
-- Validate any user-controlled search params
-- Sanitize redirects (only allow internal paths, prevent loops)
-- Use type-safe schemas (Zod + `zodValidator` for complex validation)
-- Validate at route level, not in components
+When using search params, validate any user-controlled inputs, sanitize redirects by only allowing internal paths and preventing loops, use type-safe schemas (Zod + `zodValidator` for complex validation), and validate at the route level rather than in components.
 
 ---
 
@@ -588,12 +691,11 @@ Building production-grade authentication with TanStack Router isn't about knowin
 - Redirects in `beforeLoad`, not `useEffect`
 - Data prefetching with loaders to eliminate waterfalls
 
-**Zero-Flash Auth**
-- Auth has three states: loading, authenticated, unauthenticated
-- Check `isPending` in guards before making decisions
-- Use `beforeLoad` for route protection, not `useEffect`
-- Components handle their own loading states (spinners, skeletons)
-- One session hook call, accessible everywhere via router context
+**Zero-Flash Auth (Blocking Pattern)**
+- Block rendering until auth resolves (eliminates race conditions)
+- Server cookie cache makes blocking fast after initial load
+- Single `useSession` call in AuthProvider, accessible via router context
+- Simple guards without `isPending` checks
 
 **Polish & Production Patterns**
 - Every route needs `pendingComponent` for loading states
@@ -603,24 +705,21 @@ Building production-grade authentication with TanStack Router isn't about knowin
 
 ### Everything in its Right Place
 
-TanStack Router and Better Auth are both flexible libraries. They give you primitives and trust you to use them correctly. The patterns in this article aren't the *only* way to build authentication, but they're battle-tested approaches that work in production.
+TanStack Router and Better Auth are both flexible libraries. They give you primitives and trust you to use them correctly. The patterns in this article aren't the *only* way to build your frontend routing and authentication loading, but they're approaches that I have found to work well in production.
 
-The key insight: **use ALL the features, in the right places, for the right reasons**. Each feature has a specific job:
-
-- `beforeLoad` → guards and redirects (before render)
-- `validateSearch` → search param validation (type safety)
-- `loader` → data prefetching (eliminate waterfalls)
-- `pendingComponent` → loading states (smooth UX)
-- `errorComponent` → error handling (graceful recovery)
-- `component` → rendering (clean, with data ready)
+The key insight is to **use ALL the features, in the right places, for the right reasons**. Each feature in a library you're using has a specific job; figure out what those are and use them! Use `beforeLoad` for guards and redirects (before render), `validateSearch` for search param validation (type safety), `loader` for data prefetching (eliminate waterfalls), `pendingComponent` for loading states (smooth UX), `errorComponent` for error handling (graceful recovery), and `component` for rendering (clean, with data ready).
 
 Skip one, and you introduce bugs. Overlap responsibilities, and you create confusion. Use them all correctly, and you get a production-ready architecture that's maintainable, performant, and delightful for users.
+
+### The Blocking vs Non-Blocking Choice
+
+Choose blocking for simplicity and zero race conditions (brief initial blank screen), or non-blocking for progressive rendering (handle `isPending` in every component). Better Chat chose blocking—cookie cache keeps it fast, preventing auth bugs is worth the minimal delay.
 
 ### Next Steps
 
 1. **Audit your routes** - Does every route have `pendingComponent` and `errorComponent`?
-2. **Check your guards** - Are you checking `isPending` before auth decisions?
-3. **Component loading states** - Do UI components that show user state handle `isPending`?
+2. **Choose your auth pattern** - Blocking (simpler, zero race conditions) or non-blocking (progressive rendering)?
+3. **Enable cookie cache** - Add `cookieCache` to Better Auth config for faster subsequent loads
 4. **Move redirects** - Are redirects in `beforeLoad` or still in `useEffect`?
 5. **Add validation** - Are search params validated and sanitized?
 6. **Prefetch data** - Can any routes use loaders to eliminate waterfalls?
