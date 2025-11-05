@@ -94,8 +94,11 @@ Parent routes created with `route.tsx` let you share auth guards, loading states
 ```tsx
 // Parent Layout - routes/chat/route.tsx
 export const Route = createFileRoute('/chat')({
-  beforeLoad: (opts) => {
-    requireAuthenticated({ auth: opts.context.auth, location: opts.location })
+  beforeLoad: async (opts) => {
+    await requireAuthenticated({
+      authClient: opts.context.authClient,
+      location: opts.location,
+    })
   },
   component: () => <ChatShell><Outlet /></ChatShell>,
   pendingComponent: AppShellSkeleton,
@@ -142,9 +145,9 @@ Without specifically adding a redirect, visiting `/settings` would render an emp
 ```tsx
 // /routes/settings/route.tsx
 export const Route = createFileRoute('/settings')({
-  beforeLoad: (opts) => {
-    requireAuthenticated({
-      auth: opts.context.auth,
+  beforeLoad: async (opts) => {
+    await requireAuthenticated({
+      authClient: opts.context.authClient,
       location: opts.location,
     })
 
@@ -604,9 +607,9 @@ export const Route = createFileRoute('/auth/sign-in')({
     return { redirect: redirectValue }
   },
 
-  beforeLoad: (opts) => {
-    redirectIfAuthenticated({
-      auth: opts.context.auth,
+  beforeLoad: async (opts) => {
+    await redirectIfAuthenticated({
+      authClient: opts.context.authClient,
       to: opts.search.redirect || FALLBACK_REDIRECT,  // Type-safe!
     })
   },
