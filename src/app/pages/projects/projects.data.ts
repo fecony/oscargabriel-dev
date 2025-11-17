@@ -80,4 +80,13 @@ export const projects: ProjectItem[] = [
 		githubUrl: "https://github.com/oscabriel/better-chat",
 		repo: { owner: "oscabriel", name: "better-chat" },
 	},
+	{
+		title: "Offworld",
+		description:
+			"AI-powered codebase analysis platform that explores GitHub repos, generates architecture docs and diagrams, and provides conversational project navigation. Built primarily on Tanstack Start and Convex",
+		date: "2025-11-17",
+		liveUrl: "https://offworld.sh",
+		githubUrl: "https://github.com/oscabriel/offworld",
+		repo: { owner: "oscabriel", name: "offworld" },
+	},
 ];
