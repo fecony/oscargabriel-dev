@@ -19,6 +19,7 @@ const posts = defineCollection({
 		protected: z.boolean().optional(),
 		headerImage: z.string().optional(),
 		headerImageCaption: z.string().optional(),
+		content: z.string(),
 	}),
 	transform: async (document, context) => {
 		try {
